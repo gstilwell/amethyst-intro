@@ -4,6 +4,7 @@ use amethyst::{
     assets::{AssetStorage, Loader, Handle},
     prelude::*,
     core::transform::Transform,
+    core::timing::Time,
     renderer::{
         camera::Camera,
         formats::texture::ImageFormat,
@@ -14,20 +15,45 @@ use amethyst::{
 use crate::constants::{ARENA_HEIGHT, ARENA_WIDTH};
 
 use crate::paddle::initialize_paddles;
-use crate::ball::{Ball, initialize_ball};
+use crate::ball::initialize_ball;
+use crate::scoreboard::initialize_scoreboard;
 
-pub struct Game;
+#[derive(Default)]
+pub struct Game {
+    ball_spawn_timer: Option<f32>,
+    sprite_sheet_handle: Option<Handle<SpriteSheet>>,
+}
 
 impl SimpleState for Game {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
-        let sprite_sheet_handle = load_sprite_sheet(world);
 
-        world.register::<Ball>();
+        self.ball_spawn_timer.replace(1.0);
+        self.sprite_sheet_handle.replace(load_sprite_sheet(world));
 
-        initialize_ball(world, sprite_sheet_handle.clone());
-        initialize_paddles(world, sprite_sheet_handle);
+        let sprite_sheet = self.sprite_sheet_handle.clone().unwrap();
+        initialize_paddles(world, sprite_sheet);
         initialize_camera(world);
+        initialize_scoreboard(world);
+    }
+
+    fn update(&mut self, data: &mut StateData<'_, GameData<'_, '_>>)
+        -> SimpleTrans {
+        
+        if let Some(mut timer) = self.ball_spawn_timer.take() {
+            {
+                let time = data.world.fetch::<Time>();
+                timer -= time.delta_seconds();
+            }
+
+            if timer <= 0.0 {
+                let sprite_sheet = self.sprite_sheet_handle.clone().unwrap();
+                initialize_ball(data.world, sprite_sheet);
+            } else {
+                self.ball_spawn_timer.replace(timer);
+            }
+        }
+        Trans::None
     }
 }
 
