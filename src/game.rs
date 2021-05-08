@@ -10,13 +10,14 @@ use amethyst::{
 
 use crate::constants::{ARENA_HEIGHT, ARENA_WIDTH};
 
-use crate::paddle::initialize_paddles;
+use crate::paddle::{Paddle, initialize_paddles};
 
 pub struct Game;
 
 impl SimpleState for Game {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
+        world.register::<Paddle>();
         initialize_paddles(world);
         initialize_camera(world);
     }
