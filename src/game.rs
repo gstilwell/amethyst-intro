@@ -7,15 +7,14 @@ use amethyst::{
     renderer::{
         camera::Camera,
         formats::texture::ImageFormat,
-        sprite::{
-            SpriteRender, SpriteSheet, SpriteSheetFormat,
-        },
+        sprite::{SpriteSheet, SpriteSheetFormat},
         Texture},
 };
 
 use crate::constants::{ARENA_HEIGHT, ARENA_WIDTH};
 
-use crate::paddle::{Paddle, initialize_paddles};
+use crate::paddle::initialize_paddles;
+use crate::ball::{Ball, initialize_ball};
 
 pub struct Game;
 
@@ -24,9 +23,9 @@ impl SimpleState for Game {
         let world = data.world;
         let sprite_sheet_handle = load_sprite_sheet(world);
 
-        world.register::<Paddle>();
-        world.register::<Camera>();
+        world.register::<Ball>();
 
+        initialize_ball(world, sprite_sheet_handle.clone());
         initialize_paddles(world, sprite_sheet_handle);
         initialize_camera(world);
     }
