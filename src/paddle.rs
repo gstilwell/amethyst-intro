@@ -1,6 +1,8 @@
 use amethyst::{
-    ecs::{Component, DenseVecStorage},
+    ecs::{World, Component, DenseVecStorage},
     core::transform::Transform,
+    assets::Handle,
+    renderer::sprite::{SpriteSheet, SpriteRender},
     prelude::*,
 };
 use crate::constants::{ARENA_HEIGHT, ARENA_WIDTH,
@@ -32,9 +34,10 @@ impl Component for Paddle {
     type Storage = DenseVecStorage<Self>;
 }
 
-pub fn initialize_paddles(world: &mut World) {
+pub fn initialize_paddles(world: &mut World, sprite_sheet_handle: Handle<SpriteSheet>) {
     let mut left_transform = Transform::default();
     let mut right_transform = Transform::default();
+    let sprite_render = SpriteRender::new(sprite_sheet_handle, 0);
 
     // Correctly position the paddles.
     let y = ARENA_HEIGHT / 2.0;
@@ -46,6 +49,7 @@ pub fn initialize_paddles(world: &mut World) {
         .create_entity()
         .with(Paddle::new(Side::Left))
         .with(left_transform)
+        .with(sprite_render.clone())
         .build();
 
     // Create right plank entity.
@@ -53,5 +57,6 @@ pub fn initialize_paddles(world: &mut World) {
         .create_entity()
         .with(Paddle::new(Side::Right))
         .with(right_transform)
+        .with(sprite_render)
         .build();
 }
