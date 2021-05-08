@@ -1,21 +1,23 @@
 extern crate amethyst;
 
 use amethyst::{
-    assets::{AssetStorage, Loader, Handle},
-    core::transform::Transform,
-    ecs::{Component, DenseVecStorage},
+    //assets::{AssetStorage, Loader, Handle},
     prelude::*,
-    renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
+    core::transform::Transform,
+    renderer::Camera,
+    //renderer::{Camera, ImageFormat, SpriteRender, SpriteSheet, SpriteSheetFormat, Texture},
 };
 
-mod constants;
-use crate::game::constants::{ARENA_HEIGHT, ARENA_WIDTH};
+use crate::constants::{ARENA_HEIGHT, ARENA_WIDTH};
+
+use crate::paddle::initialize_paddles;
 
 pub struct Game;
 
 impl SimpleState for Game {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
+        initialize_paddles(world);
         initialize_camera(world);
     }
 }
