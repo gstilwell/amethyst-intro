@@ -18,6 +18,7 @@ impl SimpleState for Game {
     fn on_start(&mut self, data: StateData<'_, GameData<'_, '_>>) {
         let world = data.world;
         world.register::<Paddle>();
+        world.register::<Camera>();
         initialize_paddles(world);
         initialize_camera(world);
     }
