@@ -17,6 +17,7 @@ use crate::constants::{ARENA_HEIGHT, ARENA_WIDTH};
 use crate::paddle::initialize_paddles;
 use crate::ball::initialize_ball;
 use crate::scoreboard::initialize_scoreboard;
+use crate::audio::initialize_audio;
 
 #[derive(Default)]
 pub struct Game {
@@ -35,6 +36,7 @@ impl SimpleState for Game {
         initialize_paddles(world, sprite_sheet);
         initialize_camera(world);
         initialize_scoreboard(world);
+        initialize_audio(world);
     }
 
     fn update(&mut self, data: &mut StateData<'_, GameData<'_, '_>>)
